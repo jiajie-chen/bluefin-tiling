@@ -21,7 +21,8 @@ env:
 jobs:
   build_push:
     name: Build and push image
-    runs-on: ubuntu-latest
+    # NOTE (#4): needed for Buildah v1.23.2+, switch back to `-latest` once GA
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
