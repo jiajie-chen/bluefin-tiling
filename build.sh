@@ -7,6 +7,7 @@ set -ouex pipefail
 readonly RELEASE="$(rpm -E %fedora)"
 
 # For COPR enablement, pass in `user` and `project`
+# Needed so we're installing to /usr/etc/yum.repos.d/
 function copr_enable {
   if [[ "$#" -ne 2 ]]; then
     printf '%s expected 2 arguments, got %i' "$0" "$#"
@@ -34,7 +35,7 @@ rpm-ostree install dnf5
 # TODO: test using `dnf` for builds:
 #   https://github.com/coreos/rpm-ostree/issues/718#issuecomment-2125711817
 
-dnf5 copr enable swayfx/swayfx
+copr_enable swayfx swayfx
 dnf5 install --setopt=install_weak_deps=false -y swayfx
 dnf5 install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland
 
