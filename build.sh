@@ -2,6 +2,8 @@
 # NOTE: change `set` flags to accommodate edge cases
 set -ouex pipefail
 
+# NOTE: For /etc vs. /usr/etc, see: https://github.com/ublue-os/bluefin/pull/441#issuecomment-1694785648
+
 ## Setup
 
 readonly RELEASE="$(rpm -E %fedora)"
@@ -24,7 +26,6 @@ function copr_enable {
   local copr_url="https://copr.fedorainfracloud.org/coprs/$copr_user/$copr_project/repo/fedora-$RELEASE/$copr_user-$copr_project-fedora-$RELEASE.repo"
   if _wget -O "$copr_dest" "$copr_url"; then
     # TODO: maybe some checksumming, GPG verification, etc.
-    cp "$copr_dest" "/usr/${copr_dest#/}" || return
     return 0
   fi
   return
