@@ -1,7 +1,6 @@
 #!/bin/bash
 # NOTE: change `set` flags to accommodate edge cases
-# set -ouex pipefail
-set -xu
+set -ouex pipefail
 
 ## Setup
 
@@ -35,10 +34,9 @@ rpm-ostree install dnf5
 # TODO: test using `dnf` for builds:
 #   https://github.com/coreos/rpm-ostree/issues/718#issuecomment-2125711817
 
-dnf copr enable swayfx/swayfx \
-&& dnf install --setopt=install_weak_deps=false -y swayfx \
-&& dnf install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland \
-|| exit 1
+dnf5 copr enable swayfx/swayfx
+dnf5 install --setopt=install_weak_deps=false -y swayfx
+dnf5 install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland
 
 ## Removals
 # TODO: `dnf swap` sway-wallpapers and swaybg and override default config
@@ -47,17 +45,15 @@ dnf copr enable swayfx/swayfx \
 
 # Overwrite the default sway configs
 # TODO: consider `dnf swap` to sway-config-minimal
-mkdir -p /usr/etc/sway/config.d/ \
-&& mv -n /etc/sway/* /usr/etc/sway/ \ 
-&& sed -i.orig \
+mkdir -p /usr/etc/sway/config.d/
+mv -n /etc/sway/* /usr/etc/sway/
+sed -i.orig \
   -e '/^set \$term foot/c\set \$term ptyxis' \
   -e '/^output \* bg/c\output \* bg \/usr\/share\/backgrounds\/f40\/default\/f40-01-day.png fit' \
-  /usr/etc/sway/config \
-|| exit 1
+  /usr/etc/sway/config
 printf 'swaybg_command -' > /usr/etc/sway/config.d/20-swaybg-command.conf
 
 ## Finishing
 
-dnf clean all \
-&& rpm-ostree uninstall dnf5 \
-|| exit 1
+dnf5 clean all
+rpm-ostree uninstall dnf5
