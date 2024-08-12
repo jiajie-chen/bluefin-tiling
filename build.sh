@@ -6,6 +6,11 @@ set -ouex pipefail
 
 readonly RELEASE="$(rpm -E %fedora)"
 
+function _wget {
+  wget --secure-protocol=TLSv1_3 --hsts-file=/tmp/.wget-hsts "$@"
+  return
+}
+
 # For COPR enablement, pass in `user` and `project`
 # NOTE: See https://github.com/ublue-os/bazzite/blob/cbc41100a641dee1bb4abd96909678981d194ae9/Containerfile#L168-L193
 function copr_enable {
@@ -17,17 +22,18 @@ function copr_enable {
   local copr_project="$2"
   local copr_dest="/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:$copr_user:$copr_project.repo"
   local copr_url="https://copr.fedorainfracloud.org/coprs/$copr_user/$copr_project/repo/fedora-$RELEASE/$copr_user-$copr_project-fedora-$RELEASE.repo"
-  if wget --secure-protocol=TLSv1_3 -O "$copr_dest" "$copr_url"; then
+  if _wget -O "$copr_dest" "$copr_url"; then
     # TODO: maybe some checksumming, GPG verification, etc.
+    cp "$copr_dest" "/usr/${copr_dest#/}" || return
     return 0
   fi
-  return 1
+  return
 }
 
 ## Installations
 
 # Setup install tools
-wget --secure-protocol=TLSv1_3 -O /usr/bin/copr https://raw.githubusercontent.com/ublue-os/COPR-command/main/copr
+_wget -O /usr/bin/copr https://raw.githubusercontent.com/ublue-os/COPR-command/main/copr
 chmod +x /usr/bin/copr
 rpm-ostree install dnf5
 
@@ -50,9 +56,8 @@ dnf5 install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland
 ## Configurations
 
 # Overwrite the default sway configs
-# TODO: consider `dnf swap` to sway-config-minimal
 # TODO: is moving to /usr/etc/ necessary?
-mkdir -p /usr/etc/sway/config.d/
+mkdir -p /usr/etc/sway/
 mv -n /etc/sway/* /usr/etc/sway/
 sed -i.orig \
   -e '/^set \$term foot/c\set \$term ptyxis' \
