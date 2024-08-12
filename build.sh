@@ -26,14 +26,16 @@ function copr_enable {
 
 ## Installations
 
+rpm-ostree install dnf5
+
 # Packages can be installed from any enabled yum repo on the image.
 # RPMfusion repos are available by default in ublue main images
 # List of rpmfusion packages can be found here:
 #   https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/39/x86_64/repoview/index.html&protocol=https&redirect=1
-# Should be able to use `dnf` for builds:
+# TODO: test using `dnf` for builds:
 #   https://github.com/coreos/rpm-ostree/issues/718#issuecomment-2125711817
 
-copr_enable swayfx swayfx \
+dnf copr enable swayfx/swayfx \
 && dnf install --setopt=install_weak_deps=false -y swayfx \
 && dnf install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland \
 || exit 1
@@ -56,4 +58,6 @@ printf 'swaybg_command -' > /usr/etc/sway/config.d/20-swaybg-command.conf
 
 ## Finishing
 
-dnf clean all || exit 1
+dnf clean all \
+&& rpm-ostree uninstall dnf5 \
+|| exit 1
