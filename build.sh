@@ -45,21 +45,28 @@ rpm-ostree install dnf5
 # TODO: test using `dnf` for builds:
 #   https://github.com/coreos/rpm-ostree/issues/718#issuecomment-2125711817
 
+# SwayFX
 # TODO: can this be delegated to the Bazzite `copr` helper?
 # copr enable swayfx/swayfx
 copr_enable swayfx swayfx
 dnf5 install --setopt=install_weak_deps=false -y swayfx
 dnf5 install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland
 
+# Waybar
+dnf5 install --setopt=install_weak_deps=false -y waybar
+
+# TODO: build and install Ironbar to compare w/ Waybar
+
 ## Removals
-# TODO: `dnf swap` sway-wallpapers and swaybg and override default config
 
 ## Configurations
 
-# Overwrite the default sway configs
+# Overwrite the default sway configs for Bluefin DX
 # TODO: is moving to /usr/etc/ necessary?
 mkdir -p /usr/etc/sway/
 mv -n /etc/sway/* /usr/etc/sway/
+
+# TODO: move this out into a file
 sed -i.orig \
   -e '/^set \$term foot/c\set \$term ptyxis' \
   -e '/^output \* bg/c\output \* bg \/usr\/share\/backgrounds\/f40\/default\/f40-01-day.png fit' \
