@@ -31,6 +31,25 @@ function copr_enable {
   return
 }
 
+# Overwrite a file, using a replacement and a SHA1 checksum of the original
+# Takes: `src` (file), `checksum` (string), `dest` (file)
+function overwrite_with_checksum {
+  if [[ "$#" -ne 3 ]]; then
+    printf '%s expected 3 arguments, got %i' "$0" "$#"
+    return 1
+  fi
+  local src="$1"
+  local checksum="$2"
+  local dest="$3"
+  if sha1sum -c <(printf '%s  %s' "$checksum" "$dest"); then
+    cp "$dest" "$dest".orig \
+    && cat "$src" > "$dest"
+    return
+  fi
+  printf '%s does not match checksum: %s' "$dest" "$checksum"
+  return 1
+}
+
 ## Installations
 
 # Setup install tools
@@ -61,17 +80,15 @@ dnf5 install --setopt=install_weak_deps=false -y waybar
 
 ## Configurations
 
-# Overwrite the default sway configs for Bluefin DX
-# TODO: is moving to /usr/etc/ necessary?
+# Overwrite the default Sway configs for Bluefin DX
+# Also moving to /usr/etc/ since it will be overlaid onto /etc/
 mkdir -p /usr/etc/sway/
 mv -n /etc/sway/* /usr/etc/sway/
+overwrite_with_checksum /tmp/configs/sway/config "$(cat /usr/etc/sway/config.orig.sha1)" /usr/etc/sway/config
 
-# TODO: move this out into a file
-sed -i.orig \
-  -e '/^set \$term foot/c\set \$term ptyxis' \
-  -e '/^output \* bg/c\output \* bg \/usr\/share\/backgrounds\/f40\/default\/f40-01-day.png fit' \
-  /usr/etc/sway/config
-printf 'swaybg_command -' > /usr/etc/sway/config.d/20-swaybg-command.conf
+# Move the default Waybar configs
+mkdir -p /usr/etc/xdg/waybar/
+mv -n /etc/xdg/waybar/* /usr/etc/xdg/waybar/
 
 ## Finishing
 
