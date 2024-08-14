@@ -84,7 +84,7 @@ dnf5 install --setopt=install_weak_deps=false -y waybar
 # Also moving to /usr/etc/ since it will be overlaid onto /etc/
 mkdir -p /usr/etc/sway/
 mv -n /etc/sway/* /usr/etc/sway/
-overwrite_with_checksum /tmp/configs/sway/config "$(cat /usr/etc/sway/config.orig.sha1)" /usr/etc/sway/config
+overwrite_with_checksum /tmp/configs/sway/config "$(cat /tmp/configs/sway/config.orig.sha1)" /usr/etc/sway/config
 
 # Move the default Waybar configs
 mkdir -p /usr/etc/xdg/waybar/
