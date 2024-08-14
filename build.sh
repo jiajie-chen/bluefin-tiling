@@ -31,6 +31,25 @@ function copr_enable {
   return
 }
 
+# Overwrite a file, using a replacement and a SHA1 checksum of the original
+# Takes: `src` (file), `checksum` (string), `dest` (file)
+function overwrite_with_checksum {
+  if [[ "$#" -ne 3 ]]; then
+    printf '%s expected 3 arguments, got %i' "$0" "$#"
+    return 1
+  fi
+  local src="$1"
+  local checksum="$2"
+  local dest="$3"
+  if sha1sum -c <(printf '%s  %s' "$checksum" "$dest"); then
+    cp "$dest" "$dest".orig \
+    && cat "$src" > "$dest"
+    return
+  fi
+  printf '%s does not match checksum: %s' "$dest" "$checksum"
+  return 1
+}
+
 ## Installations
 
 # Setup install tools
@@ -45,26 +64,31 @@ rpm-ostree install dnf5
 # TODO: test using `dnf` for builds:
 #   https://github.com/coreos/rpm-ostree/issues/718#issuecomment-2125711817
 
+# SwayFX
 # TODO: can this be delegated to the Bazzite `copr` helper?
 # copr enable swayfx/swayfx
 copr_enable swayfx swayfx
 dnf5 install --setopt=install_weak_deps=false -y swayfx
 dnf5 install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland
 
+# Waybar
+dnf5 install --setopt=install_weak_deps=false -y waybar
+
+# TODO: build and install Ironbar to compare w/ Waybar
+
 ## Removals
-# TODO: `dnf swap` sway-wallpapers and swaybg and override default config
 
 ## Configurations
 
-# Overwrite the default sway configs
-# TODO: is moving to /usr/etc/ necessary?
+# Overwrite the default Sway configs for Bluefin DX
+# Also moving to /usr/etc/ since it will be overlaid onto /etc/
 mkdir -p /usr/etc/sway/
 mv -n /etc/sway/* /usr/etc/sway/
-sed -i.orig \
-  -e '/^set \$term foot/c\set \$term ptyxis' \
-  -e '/^output \* bg/c\output \* bg \/usr\/share\/backgrounds\/f40\/default\/f40-01-day.png fit' \
-  /usr/etc/sway/config
-printf 'swaybg_command -' > /usr/etc/sway/config.d/20-swaybg-command.conf
+overwrite_with_checksum /tmp/configs/sway/config "$(cat /tmp/configs/sway/config.orig.sha1)" /usr/etc/sway/config
+
+# Move the default Waybar configs
+mkdir -p /usr/etc/xdg/waybar/
+mv -n /etc/xdg/waybar/* /usr/etc/xdg/waybar/
 
 ## Finishing
 
