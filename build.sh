@@ -7,7 +7,9 @@ set -ouex pipefail
 ## Setup
 
 readonly RELEASE="$(rpm -E %fedora)"
+readonly WORKSPACE="$(pwd)"
 
+# wget wrapper, sets default flags
 function _wget {
   wget --secure-protocol=TLSv1_3 --hsts-file=/tmp/.wget-hsts "$@"
   return
@@ -56,12 +58,15 @@ function overwrite_with_checksum {
 _wget -O /usr/bin/copr https://raw.githubusercontent.com/ublue-os/COPR-command/main/copr
 chmod +x /usr/bin/copr
 rpm-ostree install dnf5
+dnf5 install -y rust cargo
+TMPFILE="$(mktemp -d /tmp/cargo-home.XXXXXXXXXX)" || exit 1
+export CARGO_HOME="${TMPFILE}/"
 
 # Packages can be installed from any enabled yum repo on the image.
 # RPMfusion repos are available by default in ublue main images
 # List of rpmfusion packages can be found here:
 #   https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/39/x86_64/repoview/index.html&protocol=https&redirect=1
-# TODO: test using `dnf` for builds:
+# Can also use `dnf5` for builds:
 #   https://github.com/coreos/rpm-ostree/issues/718#issuecomment-2125711817
 
 # SwayFX
@@ -75,6 +80,30 @@ dnf5 install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland
 dnf5 install --setopt=install_weak_deps=false -y waybar
 
 # TODO: build and install Ironbar to compare w/ Waybar
+
+# Onagre w/ Launcher
+# TODO: RPM packaging?
+TMPFILE="$(mktemp -d /tmp/pop-launcher-build.XXXXXXXXXX)" || exit 1
+cd "${TMPFILE}"
+git clone --depth=1 --branch='1.2.1' https://github.com/pop-os/launcher.git launcher
+cd ./launcher
+# patch out the PopOS-specific scripts
+rm -rf ./scripts/system76-power
+# patch justfile for better root prefix handling
+sed -i "s|rootdir + '/usr/'|rootdir + 'usr/'|g" ./justfile
+just vendor
+just vendor=1
+just rootdir=/ \
+  plugins="desktop_entries files find pulse recent scripts terminal web" \
+  install
+cd "${WORKSPACE}"
+TMPFILE="$(mktemp -d /tmp/onagre-build.XXXXXXXXXX)" || exit 1
+cd "${TMPFILE}"
+git clone --depth=1 --branch='1.1.0' https://github.com/onagre-launcher/onagre.git onagre
+cd ./onagre
+cargo build --release --locked
+install -Dm0755 target/release/onagre /usr/bin/
+cd "${WORKSPACE}"
 
 ## Removals
 
@@ -90,8 +119,15 @@ overwrite_with_checksum /tmp/configs/sway/config "$(cat /tmp/configs/sway/config
 mkdir -p /usr/etc/xdg/waybar/
 mv -n /etc/xdg/waybar/* /usr/etc/xdg/waybar/
 
+# Add default Onagre configs
+mkdir -p /usr/etc/xdg/onagre/
+install -Dm0644 /tmp/configs/onagre/theme.scss /usr/etc/xdg/onagre/
+
 ## Finishing
 
-# Cleanup and remove dnf5
-dnf5 clean all
+# Cleanup and remove dnf5/temp install tools
+dnf5 remove -y rust cargo
+export -n CARGO_HOME
+dnf5 autoremove -y
+dnf5 clean -y all
 rpm-ostree uninstall dnf5
