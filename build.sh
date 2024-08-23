@@ -89,8 +89,8 @@ git clone --depth=1 --branch='1.2.1' https://github.com/pop-os/launcher.git laun
 cd ./launcher
 # patch out the PopOS-specific scripts
 rm -rf ./scripts/system76-power
-# patch justfile for better root prefix
-sed -i "s|rootdir + '/usr/'|rootdir / 'usr'|g" ./justfile
+# patch justfile for better root prefix handling
+sed -i "s|rootdir + '/usr/'|rootdir + 'usr/'|g" ./justfile
 just vendor
 just vendor=1
 just rootdir=/ \
