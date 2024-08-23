@@ -85,10 +85,12 @@ dnf5 install --setopt=install_weak_deps=false -y waybar
 # TODO: RPM packaging?
 TMPFILE="$(mktemp -d /tmp/onagre-build.XXXXXXXXXX)" || exit 1
 cd "${TMPFILE}"
-git clone --depth=1 --branch='1.2.4' https://github.com/onagre-launcher/launcher.git launcher
+git clone --depth=1 --branch='1.2.1' https://github.com/pop-os/launcher.git launcher
 cd ./launcher
+# patch out the PopOS-specific scripts
+rm -rf ./scripts/system76-power
 just vendor
-just build-vendored
+just vendor=1
 just rootdir=/ \
   plugins="desktop_entries files find pulse recent scripts terminal web" \
   install
