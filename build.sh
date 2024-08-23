@@ -90,7 +90,7 @@ cd ./launcher
 # patch out the PopOS-specific scripts
 rm -rf ./scripts/system76-power
 # patch justfile for better root prefix
-sed -i "s|rootdir \+ '/usr\'|rootdir / 'usr'|g" ./justfile
+sed -i "s|rootdir \+ '/usr/'|rootdir / 'usr'|g" ./justfile
 just vendor
 just vendor=1
 just rootdir=/ \
