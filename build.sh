@@ -58,7 +58,7 @@ function overwrite_with_checksum {
 _wget -O /usr/bin/copr https://raw.githubusercontent.com/ublue-os/COPR-command/main/copr
 chmod +x /usr/bin/copr
 rpm-ostree install dnf5
-dnf5 install rust cargo
+dnf5 install -y rust cargo
 
 # Packages can be installed from any enabled yum repo on the image.
 # RPMfusion repos are available by default in ublue main images
