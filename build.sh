@@ -60,7 +60,7 @@ chmod +x /usr/bin/copr
 rpm-ostree install dnf5
 dnf5 install -y rust cargo
 TMPFILE="$(mktemp -d /tmp/cargo-home.XXXXXXXXXX)" || exit 1
-CARGO_HOME="${TMPFILE}/"
+export CARGO_HOME="${TMPFILE}/"
 
 # Packages can be installed from any enabled yum repo on the image.
 # RPMfusion repos are available by default in ublue main images
@@ -120,8 +120,9 @@ install -Dm0644 /tmp/configs/onagre/theme.scss /usr/etc/xdg/onagre/
 
 ## Finishing
 
-# Cleanup and remove dnf5
+# Cleanup and remove dnf5/temp install tools
 dnf5 remove rust cargo
+export -n CARGO_HOME
 dnf5 autoremove
 dnf5 clean all
 rpm-ostree uninstall dnf5
