@@ -83,12 +83,14 @@ dnf5 install --setopt=install_weak_deps=false -y waybar
 
 # Onagre w/ Launcher
 # TODO: RPM packaging?
-TMPFILE="$(mktemp -d /tmp/onagre-build.XXXXXXXXXX)" || exit 1
+TMPFILE="$(mktemp -d /tmp/pop-launcher-build.XXXXXXXXXX)" || exit 1
 cd "${TMPFILE}"
 git clone --depth=1 --branch='1.2.1' https://github.com/pop-os/launcher.git launcher
 cd ./launcher
 # patch out the PopOS-specific scripts
 rm -rf ./scripts/system76-power
+# patch justfile for better root prefix
+sed -i "s|rootdir \+ '/usr\'|rootdir / 'usr'|g" ./justfile
 just vendor
 just vendor=1
 just rootdir=/ \
@@ -118,6 +120,7 @@ mkdir -p /usr/etc/xdg/waybar/
 mv -n /etc/xdg/waybar/* /usr/etc/xdg/waybar/
 
 # Add default Onagre configs
+mkdir -p /usr/etc/xdg/onagre/
 install -Dm0644 /tmp/configs/onagre/theme.scss /usr/etc/xdg/onagre/
 
 ## Finishing
