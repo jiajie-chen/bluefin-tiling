@@ -90,7 +90,7 @@ cd ./launcher
 # patch out the PopOS-specific scripts
 rm -rf ./scripts/system76-power
 # patch justfile for better root prefix
-sed -i "s|rootdir \+ '/usr/'|rootdir / 'usr'|g" ./justfile
+sed -i "s|rootdir + '/usr/'|rootdir / 'usr'|g" ./justfile
 just vendor
 just vendor=1
 just rootdir=/ \
@@ -126,8 +126,8 @@ install -Dm0644 /tmp/configs/onagre/theme.scss /usr/etc/xdg/onagre/
 ## Finishing
 
 # Cleanup and remove dnf5/temp install tools
-dnf5 remove rust cargo
+dnf5 remove -y rust cargo
 export -n CARGO_HOME
-dnf5 autoremove
-dnf5 clean all
+dnf5 autoremove -y
+dnf5 clean -y all
 rpm-ostree uninstall dnf5
