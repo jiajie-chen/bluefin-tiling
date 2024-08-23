@@ -59,6 +59,8 @@ _wget -O /usr/bin/copr https://raw.githubusercontent.com/ublue-os/COPR-command/m
 chmod +x /usr/bin/copr
 rpm-ostree install dnf5
 dnf5 install -y rust cargo
+TMPFILE="$(mktemp -d /tmp/cargo-home.XXXXXXXXXX)" || exit 1
+CARGO_HOME="${TMPFILE}/"
 
 # Packages can be installed from any enabled yum repo on the image.
 # RPMfusion repos are available by default in ublue main images
