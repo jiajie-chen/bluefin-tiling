@@ -81,7 +81,7 @@ dnf5 install --setopt=install_weak_deps=false -y waybar
 
 # Onagre w/ Launcher
 # TODO: RPM packaging?
-TMPFILE="$(mktemp /tmp/onagre-build.XXXXXXXXXX)" || exit 1
+TMPFILE="$(mktemp -d /tmp/onagre-build.XXXXXXXXXX)" || exit 1
 cd "${TMPFILE}"
 git clone --depth=1 --branch='1.2.4' https://github.com/onagre-launcher/launcher.git launcher
 cd ./launcher
@@ -91,7 +91,7 @@ just rootdir=/ \
   plugins="desktop_entries files find pulse recent scripts terminal web" \
   install
 cd "${WORKSPACE}"
-TMPFILE="$(mktemp /tmp/onagre-build.XXXXXXXXXX)" || exit 1
+TMPFILE="$(mktemp -d /tmp/onagre-build.XXXXXXXXXX)" || exit 1
 cd "${TMPFILE}"
 git clone --depth=1 --branch='1.1.0' https://github.com/onagre-launcher/onagre.git onagre
 cd ./onagre
