@@ -105,7 +105,13 @@ cargo build --release --locked
 install -Dm0755 target/release/onagre /usr/bin/
 cd "${WORKSPACE}"
 
+# LibreWolf
+flatpak --system -y install --or-update flathub io.gitlab.librewolf-community
+
 ## Removals
+
+# Firefox
+flatpak --system -y uninstall --delete-data flathub org.mozilla.firefox
 
 ## Configurations
 
@@ -123,7 +129,16 @@ mv -n /etc/xdg/waybar/* /usr/etc/xdg/waybar/
 mkdir -p /usr/etc/xdg/onagre/
 install -Dm0644 /tmp/configs/onagre/theme.scss /usr/etc/xdg/onagre/
 
+# TODO: LibreWolf native messaging - need to symlink and configure for flatpaks
+# https://librewolf.net/docs/faq/#how-do-i-get-native-messaging-to-work
+
+# TODO: Fix up Bluefin justfiles for new system flatpaks: https://github.com/ublue-os/bluefin/blob/b31172b0f35a3e2b989c4d9bb25dde1ea4f1a480/just/bluefin-system.just#L267
+# TODO: Fix up Bluefin rebase helper: https://github.com/ublue-os/bluefin/blob/b31172b0f35a3e2b989c4d9bb25dde1ea4f1a480/system_files/shared/usr/bin/ublue-rollback-helper
+
 ## Finishing
+
+# Flatpak cleanup
+flatpak --system -y uninstall --unused
 
 # Cleanup and remove dnf5/temp install tools
 dnf5 remove -y rust cargo
@@ -131,3 +146,5 @@ export -n CARGO_HOME
 dnf5 autoremove -y
 dnf5 clean -y all
 rpm-ostree uninstall dnf5
+
+# NOTE: invoke rpm-ostree outside of script to complete build cleanup
