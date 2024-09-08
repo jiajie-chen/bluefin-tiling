@@ -111,7 +111,8 @@ flatpak --system -y install --or-update flathub io.gitlab.librewolf-community
 ## Removals
 
 # Firefox
-flatpak --system -y uninstall --delete-data flathub org.mozilla.firefox
+flatpak --system -y remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak --system -y uninstall --delete-data org.mozilla.firefox
 
 ## Configurations
 
