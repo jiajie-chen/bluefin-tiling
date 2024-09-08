@@ -61,7 +61,7 @@ TMPFILE="$(mktemp -d /tmp/cargo-home.XXXXXXXXXX)" || exit 1
 export CARGO_HOME="${TMPFILE}/"
 
 # Ensure flathub enabled
-flatpak remote-add --system --noninteractive --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 ## Installations
 
