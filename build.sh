@@ -52,8 +52,6 @@ function overwrite_with_checksum {
   return 1
 }
 
-## Installations
-
 # Setup install tools
 _wget -O /usr/bin/copr https://raw.githubusercontent.com/ublue-os/COPR-command/main/copr
 chmod +x /usr/bin/copr
@@ -61,6 +59,11 @@ rpm-ostree install dnf5
 dnf5 install -y rust cargo
 TMPFILE="$(mktemp -d /tmp/cargo-home.XXXXXXXXXX)" || exit 1
 export CARGO_HOME="${TMPFILE}/"
+
+# Ensure flathub enabled
+flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+## Installations
 
 # Packages can be installed from any enabled yum repo on the image.
 # RPMfusion repos are available by default in ublue main images
@@ -105,7 +108,13 @@ cargo build --release --locked
 install -Dm0755 target/release/onagre /usr/bin/
 cd "${WORKSPACE}"
 
+# LibreWolf
+flatpak install --system --noninteractive --or-update flathub io.gitlab.librewolf-community
+
 ## Removals
+
+# Firefox
+flatpak uninstall --system --noninteractive --delete-data org.mozilla.firefox
 
 ## Configurations
 
@@ -123,7 +132,16 @@ mv -n /etc/xdg/waybar/* /usr/etc/xdg/waybar/
 mkdir -p /usr/etc/xdg/onagre/
 install -Dm0644 /tmp/configs/onagre/theme.scss /usr/etc/xdg/onagre/
 
+# TODO: LibreWolf native messaging - need to symlink and configure for flatpaks
+# https://librewolf.net/docs/faq/#how-do-i-get-native-messaging-to-work
+
+# TODO: Fix up Bluefin justfiles for new system flatpaks: https://github.com/ublue-os/bluefin/blob/b31172b0f35a3e2b989c4d9bb25dde1ea4f1a480/just/bluefin-system.just#L267
+# TODO: Fix up Bluefin rebase helper: https://github.com/ublue-os/bluefin/blob/b31172b0f35a3e2b989c4d9bb25dde1ea4f1a480/system_files/shared/usr/bin/ublue-rollback-helper
+
 ## Finishing
+
+# Flatpak cleanup
+flatpak --system -y uninstall --unused
 
 # Cleanup and remove dnf5/temp install tools
 dnf5 remove -y rust cargo
@@ -131,3 +149,5 @@ export -n CARGO_HOME
 dnf5 autoremove -y
 dnf5 clean -y all
 rpm-ostree uninstall dnf5
+
+# NOTE: invoke rpm-ostree outside of script to complete build cleanup
