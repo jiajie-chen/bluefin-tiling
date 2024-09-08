@@ -52,8 +52,6 @@ function overwrite_with_checksum {
   return 1
 }
 
-## Installations
-
 # Setup install tools
 _wget -O /usr/bin/copr https://raw.githubusercontent.com/ublue-os/COPR-command/main/copr
 chmod +x /usr/bin/copr
@@ -61,6 +59,11 @@ rpm-ostree install dnf5
 dnf5 install -y rust cargo
 TMPFILE="$(mktemp -d /tmp/cargo-home.XXXXXXXXXX)" || exit 1
 export CARGO_HOME="${TMPFILE}/"
+
+# Ensure flathub enabled
+flatpak remote-add --system --noninteractive --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+## Installations
 
 # Packages can be installed from any enabled yum repo on the image.
 # RPMfusion repos are available by default in ublue main images
@@ -106,13 +109,12 @@ install -Dm0755 target/release/onagre /usr/bin/
 cd "${WORKSPACE}"
 
 # LibreWolf
-flatpak --system -y install --or-update flathub io.gitlab.librewolf-community
+flatpak install --system --noninteractive --or-update flathub io.gitlab.librewolf-community
 
 ## Removals
 
 # Firefox
-flatpak --system -y remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak --system -y uninstall --delete-data org.mozilla.firefox
+flatpak uninstall --system --noninteractive --delete-data org.mozilla.firefox
 
 ## Configurations
 
