@@ -83,27 +83,28 @@ dnf5 install --setopt=install_weak_deps=false -y waybar
 
 # Onagre w/ Launcher
 # TODO: RPM packaging?
-TMPFILE="$(mktemp -d /tmp/pop-launcher-build.XXXXXXXXXX)" || exit 1
-cd "${TMPFILE}"
-git clone --depth=1 --branch='1.2.1' https://github.com/pop-os/launcher.git launcher
-cd ./launcher
-# patch out the PopOS-specific scripts
-rm -rf ./scripts/system76-power
-# patch justfile for better root prefix handling
-sed -i "s|rootdir + '/usr/'|rootdir + 'usr/'|g" ./justfile
-just vendor
-just vendor=1
-just rootdir=/ \
-  plugins="desktop_entries files find pulse recent scripts terminal web" \
-  install
-cd "${WORKSPACE}"
-TMPFILE="$(mktemp -d /tmp/onagre-build.XXXXXXXXXX)" || exit 1
-cd "${TMPFILE}"
-git clone --depth=1 --branch='1.1.0' https://github.com/onagre-launcher/onagre.git onagre
-cd ./onagre
-cargo build --release --locked
-install -Dm0755 target/release/onagre /usr/bin/
-cd "${WORKSPACE}"
+# FIXME(2025-10-28): this is breaking builds
+# TMPFILE="$(mktemp -d /tmp/pop-launcher-build.XXXXXXXXXX)" || exit 1
+# cd "${TMPFILE}"
+# git clone --depth=1 --branch='1.2.1' https://github.com/pop-os/launcher.git launcher
+# cd ./launcher
+# # patch out the PopOS-specific scripts
+# rm -rf ./scripts/system76-power
+# # patch justfile for better root prefix handling
+# sed -i "s|rootdir + '/usr/'|rootdir + 'usr/'|g" ./justfile
+# just vendor
+# just vendor=1
+# just rootdir=/ \
+#   plugins="desktop_entries files find pulse recent scripts terminal web" \
+#   install
+# cd "${WORKSPACE}"
+# TMPFILE="$(mktemp -d /tmp/onagre-build.XXXXXXXXXX)" || exit 1
+# cd "${TMPFILE}"
+# git clone --depth=1 --branch='1.1.0' https://github.com/onagre-launcher/onagre.git onagre
+# cd ./onagre
+# cargo build --release --locked
+# install -Dm0755 target/release/onagre /usr/bin/
+# cd "${WORKSPACE}"
 
 ## Removals
 
@@ -120,8 +121,9 @@ mkdir -p /usr/etc/xdg/waybar/
 mv -n /etc/xdg/waybar/* /usr/etc/xdg/waybar/
 
 # Add default Onagre configs
-mkdir -p /usr/etc/xdg/onagre/
-install -Dm0644 /tmp/configs/onagre/theme.scss /usr/etc/xdg/onagre/
+# FIXME(2025-10-28): Onagre builds not workin ATM
+# mkdir -p /usr/etc/xdg/onagre/
+# install -Dm0644 /tmp/configs/onagre/theme.scss /usr/etc/xdg/onagre/
 
 ## Finishing
 
