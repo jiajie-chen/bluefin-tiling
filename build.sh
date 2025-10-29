@@ -57,7 +57,8 @@ function overwrite_with_checksum {
 # Setup install tools
 _wget -O /usr/bin/copr https://raw.githubusercontent.com/ublue-os/COPR-command/main/copr
 chmod +x /usr/bin/copr
-rpm-ostree install dnf5
+# FIXME(2025-10-28): `dnf5` seems to be included in later versions of Bluefin, so no need to install - may need to switch off rpm-ostree
+# rpm-ostree install dnf5
 dnf5 install -y rust cargo
 TMPFILE="$(mktemp -d /tmp/cargo-home.XXXXXXXXXX)" || exit 1
 export CARGO_HOME="${TMPFILE}/"
@@ -133,4 +134,5 @@ dnf5 remove -y rust cargo
 export -n CARGO_HOME
 dnf5 autoremove -y
 dnf5 clean -y all
-rpm-ostree uninstall dnf5
+# FIXME(2025-10-28): `dnf5` seems to be included in later versions of Bluefin, so no need to remove - may need to switch off rpm-ostree
+# rpm-ostree uninstall dnf5
