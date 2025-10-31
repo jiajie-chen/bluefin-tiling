@@ -23,6 +23,7 @@ readonly WORKSPACE="$(pwd)"
 # dnf5 -y install package
 ## Disable COPRs so they don't end up enabled on the final image:
 # dnf5 -y copr disable ublue-os/staging
+## See also: https://github.com/ublue-os/bluefin/blob/stable-20251024/build_files/shared/copr-helpers.sh
 
 ## Example for enabling a System Unit File
 # systemctl enable podman.socket
@@ -38,6 +39,7 @@ readonly WORKSPACE="$(pwd)"
 dnf5 -y copr enable swayfx/swayfx
 dnf5 install --setopt=install_weak_deps=false -y swayfx
 dnf5 install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland
+dnf -y copr disable swayfx/swayfx
 
 ## Waybar
 ## For use with Sway
@@ -47,7 +49,11 @@ dnf5 install --setopt=install_weak_deps=false -y waybar
 ## Assumes local bootstrapping for a user
 ## NOTE(2025-10-30): GCM uses `dotnet-sdk-8.0` at the moment
 ## TODO(2025-10-30): Find ways to install GCM system-wide?
+##   - See: https://github.com/ublue-os/bluefin/blob/stable-20251024/system_files/dx/usr/share/ublue-os/user-setup.hooks.d/10-vscode.sh
 dnf5 install -y dotnet-sdk-8.0
+
+## NOTE(2025-10-30): Look into Brewfile additions & overrides
+## See: https://github.com/ublue-os/bluefin/blob/stable-20251024/system_files/dx/usr/share/ublue-os/user-setup.hooks.d/10-vscode.sh
 
 ### Removals
 
