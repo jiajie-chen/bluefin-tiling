@@ -42,6 +42,11 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=tmpfs,dst=/tmp \
     /ctx/build.sh
 
+## Overlay system files overrides
+## Note: no `ctx` prefix folder here
+COPY --from=ctx \
+    /root /
+
 ### 4. LINTING
 ## Verify final image and contents are correct.
 RUN bootc container lint
