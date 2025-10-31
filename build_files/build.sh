@@ -47,7 +47,7 @@ dnf5 install --setopt=install_weak_deps=false -y waybar
 ## Assumes local bootstrapping for a user
 ## NOTE(2025-10-30): GCM uses `dotnet-sdk-8.0` at the moment
 ## TODO(2025-10-30): Find ways to install GCM system-wide?
-dnf5 install dotnet-sdk-8.0
+dnf5 install -y dotnet-sdk-8.0
 
 ### Removals
 
