@@ -8,6 +8,10 @@ set -ouex pipefail
 
 readonly WORKSPACE="$(pwd)"
 
+function _dnf5_helper {
+    dnf5 -y --setopt='*.countme=0' "$@"
+}
+
 ### Install packages
 
 ## Packages can be installed from any enabled yum repo on the image.
@@ -16,7 +20,8 @@ readonly WORKSPACE="$(pwd)"
 ## https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/42/x86_64/repoview/index.html&protocol=https&redirect=1
 
 ## this installs a package from fedora repos
-# dnf5 install -y tmux 
+## disable countme to prevent issues with `/var`
+# dnf5 -y install --setopt='*.countme=0' tmux 
 
 ## Use a COPR Example:
 # dnf5 -y copr enable ublue-os/staging
@@ -36,21 +41,21 @@ readonly WORKSPACE="$(pwd)"
 ## SwayFX
 ## Avoid installing everything, to customize terminal, etc. later on
 ## NOTE(2025-10-30): qt5-base is installed already - adding qt6 as well
-dnf5 -y copr enable swayfx/swayfx
-dnf5 install --setopt=install_weak_deps=false -y swayfx
-dnf5 install -y sway-systemd swayidle qt5-qtwayland qt6-qtwayland
-dnf -y copr disable swayfx/swayfx
+_dnf5_helper copr enable swayfx/swayfx
+_dnf5_helper install --setopt=install_weak_deps=false swayfx
+_dnf5_helper install  sway-systemd swayidle qt5-qtwayland qt6-qtwayland
+_dnf5_helper copr disable swayfx/swayfx
 
 ## Waybar
 ## For use with Sway
-dnf5 install --setopt=install_weak_deps=false -y waybar
+_dnf5_helper install --setopt=install_weak_deps=false waybar
 
 ## Dotnet (for `git-credential-manager`)
 ## Assumes local bootstrapping for a user
 ## NOTE(2025-10-30): GCM uses `dotnet-sdk-8.0` at the moment
 ## TODO(2025-10-30): Find ways to install GCM system-wide?
 ##   - See: https://github.com/ublue-os/bluefin/blob/stable-20251024/system_files/dx/usr/share/ublue-os/user-setup.hooks.d/10-vscode.sh
-dnf5 install -y dotnet-sdk-8.0
+_dnf5_helper install dotnet-sdk-8.0
 
 ## NOTE(2025-10-30): Look into Brewfile additions & overrides
 ## See: https://github.com/ublue-os/bluefin/blob/stable-20251024/system_files/dx/usr/share/ublue-os/user-setup.hooks.d/10-vscode.sh
@@ -63,5 +68,5 @@ dnf5 install -y dotnet-sdk-8.0
 # dnf5 remove -y rust cargo
 # export -n CARGO_HOME
 
-dnf5 autoremove -y
-dnf5 clean -y all
+_dnf5_helper autoremove
+_dnf5_helper clean all
