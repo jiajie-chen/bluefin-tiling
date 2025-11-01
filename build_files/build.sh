@@ -48,7 +48,12 @@ _dnf5_helper copr disable swayfx/swayfx
 
 ## Waybar
 ## For use with Sway
+
 _dnf5_helper install --setopt=install_weak_deps=false waybar
+
+## COSMIC (Testing)
+## See: https://packages.fedoraproject.org/pkgs/cosmic-session/cosmic-session/
+_dnf5_helper install cosmic-session --exclude='cosmic-term,cosmic-greeter'
 
 ## Dotnet (for `git-credential-manager`)
 ## Assumes local bootstrapping for a user
