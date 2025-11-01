@@ -9,7 +9,7 @@
 ARG SOURCE_IMAGE="bluefin-dx"
 
 ## SOURCE_TAG arg must be a version built for the specific image: eg, 39, 40, gts, latest
-ARG SOURCE_TAG="stable"
+ARG SOURCE_TAG="stable@sha256:1527efbb34402c8c019a6c0dcd404845c0432590b52aaa92e8ce4fc209b17a52"
 
 ### 1a. COPY BUILD FILES
 ## Allow build scripts to be referenced without being copied into the final image
