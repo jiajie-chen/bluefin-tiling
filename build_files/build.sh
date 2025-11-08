@@ -69,6 +69,10 @@ _dnf5_helper install dotnet-sdk-8.0
 ## NOTE(2025-10-30): Look into Brewfile additions & overrides
 ## See: https://github.com/ublue-os/bluefin/blob/stable-20251024/system_files/dx/usr/share/ublue-os/user-setup.hooks.d/10-vscode.sh
 
+## Flatpaks
+## NOTE: currently using `flatpak preinstall`, see `system_files/`
+## TODO(2025-11-06): how does this interact with the `ujust` flatpak helper?
+
 ### Removals
 
 ### Finishing
