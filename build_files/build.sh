@@ -12,6 +12,9 @@ function _dnf5_helper {
     dnf5 -y --setopt='*.countme=0' "$@"
 }
 
+### Sync system files from context
+rsync -rvK /ctx/system_files/ /
+
 ### Install packages
 
 ## Packages can be installed from any enabled yum repo on the image.
