@@ -15,7 +15,8 @@ ARG SOURCE_TAG="stable@sha256:1527efbb34402c8c019a6c0dcd404845c0432590b52aaa92e8
 ## Allow build scripts to be referenced without being copied into the final image
 ## (Alternatively, can bind mount the files directly)
 FROM scratch AS ctx
-COPY ./build_files /
+COPY ./system_files /system_files
+COPY ./build_files /build_files
 
 ### 2. BASE IMAGE
 ## this is a standard Containerfile FROM using the build ARGs above to select the right upstream image
@@ -40,12 +41,7 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
     --mount=type=tmpfs,dst=/tmp \
-    /ctx/build.sh
-
-## Overlay system files overrides
-## Note: no `ctx` prefix folder here
-COPY --from=ctx \
-    /root /
+    /ctx/build_files/build.sh
 
 ### 4. LINTING
 ## Verify final image and contents are correct.
