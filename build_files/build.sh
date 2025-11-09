@@ -59,6 +59,10 @@ _dnf5_helper install --setopt=install_weak_deps=false waybar
 ## TODO(2025-11-06): no way to exclude required deps, without manual RPM download and install
 _dnf5_helper install cosmic-session # --exclude='cosmic-term,cosmic-greeter'
 
+## GNOME Shell Extensions
+## NOTE(2025-11-09): Unlike Bluefin, just use Fedora repos vs. source builds
+_dnf5_helper install gnome-shell-extension-just-perfection gnome-shell-extension-pop-shell
+
 ## Dotnet (for `git-credential-manager`)
 ## Assumes local bootstrapping for a user
 ## NOTE(2025-10-30): GCM uses `dotnet-sdk-8.0` at the moment
