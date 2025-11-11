@@ -29,13 +29,24 @@ _dnf5_helper copr disable swayfx/swayfx
 
 ## Waybar
 ## For use with Sway
-
 _dnf5_helper install --setopt=install_weak_deps=false waybar
+
+## Hyprland
+_dnf5_helper install --setopt=install_weak_deps=false hyprland hyprland-devel
+_dnf5_helper install brightnessctl wofi xdg-desktop-portal-hyprland
+
+## nwg-shell
+## For use with Sway or Hyprland
+## NOTE(2025-11-10): For now, not using COPR
+# _dnf5_helper copr enable tofik/nwg-shell
+_dnf5_helper install nwg-panel
+# _dnf5_helper copr disable tofik/nwg-shell
 
 ## COSMIC (Testing)
 ## See: https://packages.fedoraproject.org/pkgs/cosmic-session/cosmic-session/
 ## TODO(2025-11-06): no way to exclude required deps, without manual RPM download and install
-_dnf5_helper install cosmic-session # --exclude='cosmic-term,cosmic-greeter'
+## NOTE(2025-11-10): decided to use GNOME + Pop Shell for now
+# _dnf5_helper install cosmic-session # --exclude='cosmic-term,cosmic-greeter'
 
 ## GNOME Shell Extensions
 ## NOTE(2025-11-09): Unlike Bluefin, just use Fedora repos vs. source builds
