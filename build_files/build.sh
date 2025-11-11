@@ -29,13 +29,13 @@ _dnf5_helper copr disable swayfx/swayfx
 
 ## Waybar
 ## For use with Sway
-
 _dnf5_helper install --setopt=install_weak_deps=false waybar
 
 ## COSMIC (Testing)
 ## See: https://packages.fedoraproject.org/pkgs/cosmic-session/cosmic-session/
 ## TODO(2025-11-06): no way to exclude required deps, without manual RPM download and install
-_dnf5_helper install cosmic-session # --exclude='cosmic-term,cosmic-greeter'
+## NOTE(2025-11-10): decided to use GNOME + Pop Shell for now
+# _dnf5_helper install cosmic-session # --exclude='cosmic-term,cosmic-greeter'
 
 ## GNOME Shell Extensions
 ## NOTE(2025-11-09): Unlike Bluefin, just use Fedora repos vs. source builds
