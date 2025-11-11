@@ -32,7 +32,15 @@ _dnf5_helper copr disable swayfx/swayfx
 _dnf5_helper install --setopt=install_weak_deps=false waybar
 
 ## Hyprland
-_dnf5_helper install hyprland hyprland-devel
+_dnf5_helper install --setopt=install_weak_deps=false hyprland hyprland-devel
+_dnf5_helper install brightnessctl wofi xdg-desktop-portal-hyprland
+
+## nwg-shell
+## For use with Sway or Hyprland
+## NOTE(2025-11-10): For now, not using COPR
+# _dnf5_helper copr enable tofik/nwg-shell
+_dnf5_helper install nwg-panel
+# _dnf5_helper copr disable tofik/nwg-shell
 
 ## COSMIC (Testing)
 ## See: https://packages.fedoraproject.org/pkgs/cosmic-session/cosmic-session/
