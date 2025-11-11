@@ -36,7 +36,7 @@ This is executed by in `Containerfile` to construct the image's contents.
 
 #### Installing Packages
 
-> Adpated from the `build_files/build.sh` comments in
+> Adapted from the `build_files/build.sh` comments in
 > [ublue-os/image-template](https://github.com/ublue-os/image-template/tree/342dae4afc916698c82dc49c5380990c1f19cc68).
 
 Packages can be installed from any enabled yum repo on the image.
