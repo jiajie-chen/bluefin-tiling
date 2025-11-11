@@ -45,4 +45,5 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
 
 ### 4. LINTING
 ## Verify final image and contents are correct.
+## NOTE: For /etc vs. /usr/etc, see: https://bootc-dev.github.io/bootc/filesystem.html#usretc
 RUN bootc container lint
