@@ -32,8 +32,10 @@ _dnf5_helper copr disable swayfx/swayfx
 _dnf5_helper install --setopt=install_weak_deps=false waybar
 
 ## Hyprland
+_dnf5_helper copr enable solopasha/hyprland
 _dnf5_helper install --setopt=install_weak_deps=false hyprland hyprland-devel
 _dnf5_helper install brightnessctl wofi xdg-desktop-portal-hyprland
+_dnf5_helper copr disable solopasha/hyprland
 
 ## nwg-shell
 ## For use with Sway or Hyprland
