@@ -6,7 +6,7 @@
 
 [![Build disk images](https://github.com/jiajie-chen/bluefin-tiling/actions/workflows/build-disk.yml/badge.svg)](https://github.com/jiajie-chen/bluefin-tiling/actions/workflows/build-disk.yml)
 
-This repo defines the custom setup I use for Bluefin, using the [ublue-os/image-template]().
+This repo defines the custom setup I use for Bluefin, using the [ublue-os/image-template](https://github.com/ublue-os/image-template).
 
 The goal is to make it easy to bootstrap my system with tiling WMs for hobby development.
 
