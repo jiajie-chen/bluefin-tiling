@@ -15,13 +15,14 @@ on:
         options:
           - amd64
           - arm64
-  pull_request:
-    branches:
-      - main
-    paths:
-      - './disk_config/disk.toml'
-      - './disk_config/iso.toml'
-      - './.github/workflows/build-disk.yml'
+  ## No automated ISO builds for now
+  # pull_request:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - './disk_config/disk.toml'
+  #     - './disk_config/iso.toml'
+  #     - './.github/workflows/build-disk.yml'
 
 env:
   IMAGE_NAME: ${{ github.event.repository.name }} # output of build.yml, keep in sync
@@ -79,7 +80,7 @@ jobs:
 
       - name: Build disk images
         id: build
-        uses: osbuild/bootc-image-builder-action@main
+        uses: osbuild/bootc-image-builder-action@9f7497fb056e36cf0c19fc5bde0d9b03c1b13fee # main
         with:
           builder-image: ${{ env.BIB_IMAGE }}
           config-file: ${{ matrix.disk-type == 'anaconda-iso' && './disk_config/iso.toml' || './disk_config/disk.toml' }}
@@ -102,6 +103,7 @@ jobs:
         if: inputs.upload-to-s3 == true && github.event_name != 'pull_request'
         shell: bash
         env:
+          # TODO(2025-10-31): Cloudflare R2 upload
           RCLONE_CONFIG_S3_TYPE: s3
           RCLONE_CONFIG_S3_PROVIDER: ${{ secrets.S3_PROVIDER }}
           RCLONE_CONFIG_S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}

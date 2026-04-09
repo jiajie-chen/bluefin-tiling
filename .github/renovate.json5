@@ -6,6 +6,8 @@
 
   "rebaseWhen": "never",
 
+  "labels": ["dependencies"],
+
   "packageRules": [
     {
       "automerge": true,
